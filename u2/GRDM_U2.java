@@ -77,6 +77,7 @@ public class GRDM_U2 implements PlugIn {
          
         private JSlider jSliderBrightness;
 		private JSlider jSlider2;
+		private JSlider jSliderKontrast;
 		private double brightness;
 
 		CustomWindow(ImagePlus imp, ImageCanvas ic) {
@@ -89,10 +90,12 @@ public class GRDM_U2 implements PlugIn {
         	Panel panel = new Panel();
 
             panel.setLayout(new GridLayout(4, 1));
-            jSliderBrightness = makeTitledSilder("Helligkeit", 0, 200, 100);
-            jSlider2 = makeTitledSilder("Slider2-Wert", 0, 100, 50);
+            jSliderBrightness = makeTitledSilder("Helligkeit", 0, 360, 180);
+            jSlider2 = makeTitledSilder("Slider2-Wert", 0, 50, 0);
+			jSliderKontrast = makeTitledSilder("Kontrast", 0, 20, 10);
             panel.add(jSliderBrightness);
             panel.add(jSlider2);
+			panel.add(jSliderKontrast);
             
             add(panel);
             
@@ -126,7 +129,7 @@ public class GRDM_U2 implements PlugIn {
 			JSlider slider = (JSlider)e.getSource();
 
 			if (slider == jSliderBrightness) {
-				brightness = slider.getValue()-100;
+				brightness = slider.getValue()-180;
 				String str = "Helligkeit " + brightness; 
 				setSliderTitle(jSliderBrightness, str); 
 			}
@@ -135,6 +138,12 @@ public class GRDM_U2 implements PlugIn {
 				int value = slider.getValue();
 				String str = "Slider2-Wert " + value; 
 				setSliderTitle(jSlider2, str); 
+			}
+
+			if (slider == jSliderKontrast) {
+				int value = slider.getValue()-10;
+				String str = "Kontrast " + value;
+				setSliderTitle(jSliderKontrast, str);
 			}
 			
 			changePixelValues(imp.getProcessor());
@@ -163,7 +172,13 @@ public class GRDM_U2 implements PlugIn {
 					double V = (r - Y) * 0.877;
 
 
+					//TODO Kontrast (0 bis 10.0)
+					Y =
 
+
+					//TODO Farbsättigung (0 bis 5.0)
+
+					//TODO Farbdrehung um den Winkel 0 bis 360
 
 
 
