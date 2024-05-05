@@ -78,7 +78,14 @@ public class GRDM_U2 implements PlugIn {
         private JSlider jSliderBrightness;
 		private JSlider jSlider2;
 		private JSlider jSliderKontrast;
+		private JSlider jSliderSaturation;
+		private JSlider jSliderHue;
+
 		private double brightness;
+		private double kontrast;
+		private double saturation;
+		private double hue;
+
 
 		CustomWindow(ImagePlus imp, ImageCanvas ic) {
             super(imp, ic);
@@ -90,12 +97,16 @@ public class GRDM_U2 implements PlugIn {
         	Panel panel = new Panel();
 
             panel.setLayout(new GridLayout(4, 1));
-            jSliderBrightness = makeTitledSilder("Helligkeit", 0, 360, 180);
+            jSliderBrightness = makeTitledSilder("Helligkeit", 0, 256, 128);
             jSlider2 = makeTitledSilder("Slider2-Wert", 0, 50, 0);
-			jSliderKontrast = makeTitledSilder("Kontrast", 0, 20, 10);
+			jSliderKontrast = makeTitledSilder("Kontrast" , 0, 10, 5);
+			jSliderSaturation = makeTitledSilder("Saturation", 0, 10, 5);
+			jSliderHue = makeTitledSilder("Hue", 0, 360, 180);
             panel.add(jSliderBrightness);
             panel.add(jSlider2);
 			panel.add(jSliderKontrast);
+			panel.add(jSliderSaturation);
+			panel.add(jSliderHue);
             
             add(panel);
             
@@ -129,21 +140,33 @@ public class GRDM_U2 implements PlugIn {
 			JSlider slider = (JSlider)e.getSource();
 
 			if (slider == jSliderBrightness) {
-				brightness = slider.getValue()-180;
+				brightness = slider.getValue()-128;
 				String str = "Helligkeit " + brightness; 
 				setSliderTitle(jSliderBrightness, str); 
 			}
 			
 			if (slider == jSlider2) {
 				int value = slider.getValue();
-				String str = "Slider2-Wert " + value; 
+				String str = "Slider2-Wert " + value;
 				setSliderTitle(jSlider2, str); 
 			}
 
 			if (slider == jSliderKontrast) {
-				int value = slider.getValue()-10;
-				String str = "Kontrast " + value;
+				kontrast = slider.getValue()*0.2;
+				String str = "Kontrast " + kontrast;
 				setSliderTitle(jSliderKontrast, str);
+			}
+
+			if (slider == jSliderSaturation) {
+				saturation = slider.getValue()*0.2;
+				String str = "Saturation " + saturation;
+				setSliderTitle(jSliderSaturation, str);
+			}
+
+			if (slider == jSliderHue) {
+				hue = slider.getValue()-180;
+				String str = "Hue " + hue;
+				setSliderTitle(jSliderHue, str);
 			}
 			
 			changePixelValues(imp.getProcessor());
@@ -171,17 +194,24 @@ public class GRDM_U2 implements PlugIn {
 					double U = (b - Y) * 0.493;
 					double V = (r - Y) * 0.877;
 
+					//TODO Helligkeit (-180 bis 180)
+					Y += brightness;
+
 
 					//TODO Kontrast (0 bis 10.0)
-					Y =
-
+					Y = ((Y -128) * kontrast) + 128;
 
 					//TODO Farbsättigung (0 bis 5.0)
+					U *= saturation;
+					V *= saturation;
+
 
 					//TODO Farbdrehung um den Winkel 0 bis 360
+					double newU = Math.cos(Math.toRadians(hue)) * U - Math.sin(Math.toRadians(hue)) * V;
+					double newV = Math.sin(Math.toRadians(hue)) * U + Math.cos(Math.toRadians(hue)) * V;
 
-
-
+					U = newU;
+					V = newV;
 
 
 					//Umwandlung nach YUV nach RGB
@@ -193,14 +223,14 @@ public class GRDM_U2 implements PlugIn {
 
 					// anstelle dieser drei Zeilen später hier die Farbtransformation durchführen,
 					// die Y Cb Cr -Werte verändern und dann wieder zurücktransformieren
-					int rn = (int) (r + brightness);
+					/*int rn = (int) (r + brightness);
 					int gn = (int) (g + brightness);
-					int bn = (int) (b + brightness);
+					int bn = (int) (b + brightness);*/
 
 					// Hier muessen die neuen RGB-Werte wieder auf den Bereich von 0 bis 255 begrenzt werden
-					rn = Math.min(Math.max(rn, 0), 255);
-					gn = Math.min(Math.max(gn, 0), 255);
-					bn = Math.min(Math.max(bn, 0), 255);
+					int rn = Math.min(Math.max(r, 0), 255);
+					int gn = Math.min(Math.max(g, 0), 255);
+					int bn = Math.min(Math.max(b, 0), 255);
 					
 					pixels[pos] = (0xFF<<24) | (rn<<16) | (gn<<8) | bn;
 
