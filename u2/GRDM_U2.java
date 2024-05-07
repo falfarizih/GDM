@@ -82,8 +82,8 @@ public class GRDM_U2 implements PlugIn {
 		private JSlider jSliderHue;
 
 		private double brightness;
-		private double kontrast;
-		private double saturation;
+		private double kontrast = 1;
+		private double saturation = 1;
 		private double hue;
 
 
@@ -200,6 +200,8 @@ public class GRDM_U2 implements PlugIn {
 
 					//TODO Kontrast (0 bis 10.0)
 					double newY = ((Y -128) * kontrast) + 128;
+					U *= kontrast;
+					V *= kontrast;
 
 					//TODO Farbsättigung (0 bis 5.0)
 					U *= saturation;
@@ -213,16 +215,9 @@ public class GRDM_U2 implements PlugIn {
 
 					//Umwandlung nach YUV nach RGB
 					r = (int)(newY + newV/0.877);
-					g = (int)(1/0.587 * newY - 0.299/0.587*r - 0.114/0.587 * b);
 					b = (int)(newY + newU/0.493);
+					g = (int)(1/0.587 * newY - 0.299/0.587*r - 0.114/0.587 * b);
 
-
-
-					// anstelle dieser drei Zeilen später hier die Farbtransformation durchführen,
-					// die Y Cb Cr -Werte verändern und dann wieder zurücktransformieren
-					/*int rn = (int) (r + brightness);
-					int gn = (int) (g + brightness);
-					int bn = (int) (b + brightness);*/
 
 					// Hier muessen die neuen RGB-Werte wieder auf den Bereich von 0 bis 255 begrenzt werden
 					int rn = Math.min(Math.max(r, 0), 255);
