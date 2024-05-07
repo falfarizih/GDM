@@ -35,7 +35,7 @@ public class GRDM_U2 implements PlugIn {
     public static void main(String args[]) {
 		//new ImageJ();
     	//IJ.open("/users/barthel/applications/ImageJ/_images/orchid.jpg");
-    	IJ.open("C:\\Users\\falfa\\Documents\\Uni\\2.Semester\\GDM\\Übungen\\u2\\orangerei.jpg");
+    	IJ.open("C:\\Users\\falfa\\Documents\\Uni\\2.Semester\\GDM\\Übungen\\u2\\orchid.jpg");
 		
 		GRDM_U2 pw = new GRDM_U2();
 		pw.imp = IJ.getImage();
