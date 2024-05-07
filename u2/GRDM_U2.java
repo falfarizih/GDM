@@ -199,7 +199,7 @@ public class GRDM_U2 implements PlugIn {
 
 
 					//TODO Kontrast (0 bis 10.0)
-					Y = ((Y -128) * kontrast) + 128;
+					double newY = ((Y -128) * kontrast) + 128;
 
 					//TODO Farbsättigung (0 bis 5.0)
 					U *= saturation;
@@ -210,14 +210,11 @@ public class GRDM_U2 implements PlugIn {
 					double newU = Math.cos(Math.toRadians(hue)) * U - Math.sin(Math.toRadians(hue)) * V;
 					double newV = Math.sin(Math.toRadians(hue)) * U + Math.cos(Math.toRadians(hue)) * V;
 
-					U = newU;
-					V = newV;
-
 
 					//Umwandlung nach YUV nach RGB
-					r = (int)(Y + V/0.877);
-					g = (int)(1/0.587 * Y - 0.299/0.587*r - 0.114/0.587 * b);
-					b = (int)(Y + U/0.493);
+					r = (int)(newY + newV/0.877);
+					g = (int)(1/0.587 * newY - 0.299/0.587*r - 0.114/0.587 * b);
+					b = (int)(newY + newU/0.493);
 
 
 
