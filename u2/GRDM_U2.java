@@ -213,7 +213,7 @@ public class GRDM_U2 implements PlugIn {
 					double newV = Math.sin(Math.toRadians(hue)) * U + Math.cos(Math.toRadians(hue)) * V;
 
 
-					//Umwandlung nach YUV nach RGB
+					//Umwandlung nach YUV nach RGB, it uses the new b value, so b should be initialized first before g
 					r = (int)(newY + newV/0.877);
 					b = (int)(newY + newU/0.493);
 					g = (int)(1/0.587 * newY - 0.299/0.587*r - 0.114/0.587 * b);
