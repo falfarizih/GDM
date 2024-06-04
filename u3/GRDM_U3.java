@@ -350,7 +350,7 @@ public class GRDM_U3 implements PlugIn {
 			}
 
 			if (method.equals("vertikaler Fehlerdiffusion")) {
-				int border = Math.round((255 * 3) / 2);
+				int border = Math.round(255 / 2);
 				int error = 0;
 
 				for (int y = 0; y < height; y++) {
