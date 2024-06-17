@@ -12,7 +12,7 @@ import ij.plugin.filter.*;
 public class GRDM_U4 implements PlugInFilter {
 
     protected ImagePlus imp;
-    final static String[] choices = {"Wischen", "Weiche Blende", "Overlay(A,B)", "Overlay(B,A)", "Schieb Blende" ,"Chroma Key"};
+    final static String[] choices = {"Wischen", "Weiche Blende", "Overlay(A,B)", "Overlay(B,A)", "Schieb Blende" ,"Chroma Key", "Meine Überlagerung"};
 
     public int setup(String arg, ImagePlus imp) {
         this.imp = imp;
@@ -77,6 +77,7 @@ public class GRDM_U4 implements PlugInFilter {
         if (s.equals("Overlay(B,A)")) methode = 4;
         if (s.equals("Schieb Blende")) methode = 5;
         if (s.equals("Chroma Key")) methode = 6;
+        if (s.equals("Meine Überlagerung")) methode = 7;
 
         // Arrays fuer die einzelnen Bilder
         int[] pixels_B;
@@ -206,12 +207,36 @@ public class GRDM_U4 implements PlugInFilter {
                         pixels_Erg[pos] = 0xFF000000 + ((rn & 0xff) << 16) + ((gn & 0xff) << 8) + (bn & 0xff);
                     }
 
+
                     if (methode == 5) {
-                        if (x + 1 > (z - 1) * (double) width / (length - 1))
-                            pixels_Erg[pos] = pixels_B[pos];
-                        else
-                            pixels_Erg[pos] = pixels_A[pos];
+                        int offset = (int) ((z - 1) * (double) width / (length - 1));
+                        int xa = x - offset;
+                        int xb = x + width - offset;
+
+                        if (xa >= 0 && xa < width) {
+                            pixels_Erg[pos] = pixels_A[y * width + xa];
+                        } else if (xb >= 0 && xb < width) {
+                            pixels_Erg[pos] = pixels_B[y * width + xb];
+                        } else {
+                            pixels_Erg[pos] = 0;
+                        }
                     }
+
+                    if (methode == 7) {
+                        double maxRadius = Math.sqrt(width * width + height * height) / 2.0;
+                        double currentRadius = maxRadius * (z - 1) / (length - 1);
+
+                        int centerX = width / 2;
+                        int centerY = height / 2;
+
+                        double distance = Math.sqrt((x - centerX) * (x - centerX) + (y - centerY) * (y - centerY));
+                        if (distance <= currentRadius) {
+                            pixels_Erg[pos] = pixels_A[pos];
+                        } else {
+                            pixels_Erg[pos] = pixels_B[pos];
+                        }
+                    }
+
 
                 }
 

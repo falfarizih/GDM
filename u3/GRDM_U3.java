@@ -353,8 +353,8 @@ public class GRDM_U3 implements PlugIn {
 				int border = Math.round(255 / 2);
 				int error = 0;
 
-				for (int y = 0; y < height; y++) {
-					for (int x = 0; x < width; x++) {
+				for (int x = 0; x < width; x++) {
+					for (int y = 0; y < height; y++) {
 						int pos = y * width + x;
 						int argb = origPixels[pos];
 						int r = (argb >> 16) & 0xff;
@@ -506,11 +506,6 @@ public class GRDM_U3 implements PlugIn {
 							gn = 63;
 							bn = 62;
 						}
-
-						// Set the new RGB values
-						rn = Math.min(Math.max(rn, 0), 255);
-						gn = Math.min(Math.max(gn, 0), 255);
-						bn = Math.min(Math.max(bn, 0), 255);
 
 						pixels[pos] = (0xFF << 24) | (rn << 16) | (gn << 8) | bn;
 					}
